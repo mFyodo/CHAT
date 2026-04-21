@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wrapper {
+      width: 80vw;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid black;
+    }
+
+
+    .controls {
+      display: flex;
+    }
+
+    #name {
+      width: 150px;
+    }
+
+    #msg {
+      flex: 1;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login_container">
+    <input id="name" placeholder="identifiant">
+    <input id="password" placeholder="mot de passe">
+    <button id="btn_login" onclick="auth('/login')">Login</button>
+    <button id="btn_register" onclick="auth('/register')">Register</button>
+    <div id="error"></div>
+  </div>
+
+  <script>
+    const nameInput = document.getElementById("name");
+    const passwordInput = document.getElementById("password");
+    const errorDiv = document.getElementById("error");
+
+
+    async function auth(path) {
+        const name = nameInput.value
+        const password = passwordInput.value
+        errorDiv.innerText = "";
+        if (!name || !password) {
+            errorDiv.innerText = "Veuillez remplir tous les champs.";
+            return;
+        }
+        const response = await fetch(path, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, password })
+        });
+
+        if (response.ok) {
+            window.location.href = "/chat";
+        } else {
+            const errorData = await response.json();
+            errorDiv.innerText = errorData.detail || "Une erreur est survenue";
+          }
+    }
+  </script>
+</body>
+</html>
